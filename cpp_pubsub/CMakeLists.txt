@@ -47,14 +47,14 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   #find_package(GTest REQUIRED)
-  find_package(ament_cmake_gtest)
-
   #add_executable(talker_test test/test_publisher_member_function.cpp)
   #ament_target_dependencies(talker_test rclcpp std_msgs)
   #target_link_libraries(talker_test GTest::gtest GTest::gtest_main)
   #add_test(cpp_pubsub_test talker_test)
-  ament_add_gtest(cpp_pubsub_test talker_test)
-  ament_target_dependencies(cpp_pubsub_test rclcpp std_msgs)
+
+  find_package(ament_cmake_gtest)
+  ament_add_gtest(talker_test test/test_publisher_member_function.cpp)
+  ament_target_dependencies(talker_test rclcpp std_msgs)
 endif()
 
 ament_package()

@@ -56,20 +56,20 @@ class TestTalker : public ::testing::Test
 protected:
   void SetUp() override
   {
-    rclcpp::init(0, nullptr);
     node_ = std::make_shared<MinimalPublisher>();
     subscription_ = node_->create_subscription<std_msgs::msg::String>(
       "topic", 10, [this](const std_msgs::msg::String::SharedPtr msg) {
         received_messages_.push_back(msg->data);
       });
-    
+
     // Create a spinner
     executor.add_node(node_);
 
     // Run the executor in a separate thread
-    executor_thread = st::thread([&executor]() {
-      executor.spin();
-    };
+    executor_thread = std::thread(
+      [&]() {
+        executor.spin();
+      });
   }
 
   void TearDown() override
@@ -79,8 +79,6 @@ protected:
 
     // Join the executor thread
     executor_thread.join();
-
-    rclcpp::shutdown();
   }
 
   rclcpp::Node::SharedPtr node_;
@@ -102,22 +100,21 @@ TEST_F(TestTalker, PublishMessage)
   ASSERT_FALSE(received_messages_.empty());
 
   // Verify the content of the received messages
-  for (const auto& message : received_messages_)
-  {
+  for (const auto & message : received_messages_) {
     EXPECT_EQ(message.substr(0, 12), "Hello, world");
   }
 }
 
 
-int main(int argc, char **argv) {
+int main(int argc, char ** argv)
+{
   testing::InitGoogleTest(&argc, argv);
-  
-  // rclcpp::init(argc, argv);
 
-  //auto ret = RUN_ALL_TESTS();
+  rclcpp::init(argc, argv);
 
-  // rclcpp::shutdown();
+  auto ret = RUN_ALL_TESTS();
 
-  // return ret;
-  return RUN_ALL_TESTS();
+  rclcpp::shutdown();
+
+  return ret;
 }
