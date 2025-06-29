@@ -14,14 +14,34 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
 add_executable(talker src/publisher_member_function.cpp)
-ament_target_dependencies(talker rclcpp std_msgs)
+# ament_target_dependencies will be deprecated since kilted
+# ament_target_dependencies(talker rclcpp std_msgs)
+target_include_directories(talker
+  PRIVATE
+  ${rclcpp_INCLUDE_DIRS}
+  ${std_msgs_INCLUDE_DIRS}
+)
+target_link_libraries( talker PUBLIC
+  ${rclcpp_LIBRARIES}
+  ${std_msgs_LIBRARIES}
+)
 
 install(TARGETS
   talker
   DESTINATION lib/${PROJECT_NAME})
 
 add_executable(listener src/subscriber_member_function.cpp)
-ament_target_dependencies(listener rclcpp std_msgs)
+# ament_target_dependencies will be deprecated since kilted
+# ament_target_dependencies(listener rclcpp std_msgs)
+target_include_directories( listener
+  PRIVATE
+  ${rclcpp_INCLUDE_DIRS}
+  ${std_msgs_INCLUDE_DIRS}
+)
+target_link_libraries( listener PUBLIC
+  ${rclcpp_LIBRARIES}
+  ${std_msgs_LIBRARIES}
+)
 
 install(TARGETS
   talker
